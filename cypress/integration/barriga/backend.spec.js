@@ -31,7 +31,7 @@ describe('Rest test', () => {
     })
   })
 
-  it.only('Should update an account', ()  => {
+  it('Should update an account', ()  => {
     cy.request({
       method: 'GET',
       url: '/contas',
@@ -51,5 +51,23 @@ describe('Rest test', () => {
     })
 
     cy.get('@response').its('status').should('be.equal', 200)
+  })
+
+  it('Should not create and account with same name', () => {
+    cy.request({
+      url: '/contas',
+      method: 'POST',
+      headers: { Authorization: `JWT ${token}`},
+      body: {
+        nome: 'Conta mesmo nome'
+      },
+      failOnStatusCode: false
+    }).as('response')
+        
+    cy.get('@response').then(res =>{
+      console.log(res)
+      expect(res.status).to.be.equal(400)
+      expect(res.body.error).to.be.equal('Já existe uma conta com esse nome!')
+    })
   })
 })
