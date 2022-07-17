@@ -1,3 +1,10 @@
+Cypress.Commands.add('clickAlert', (locator, message) => {
+  cy.get(locator).click()
+  cy.on('window:alert', msg => {
+    expect(msg).to.be.equal(message)
+  })
+})
+
 Cypress.Commands.add('getToken', (user, passwd) => {
   cy.request({
     method: 'POST',
